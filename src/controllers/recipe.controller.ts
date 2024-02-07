@@ -1,29 +1,28 @@
-import {Controller, Get, Post, Put, Delete } from '@nestjs/common';
-import { Recipe } from 'src/models/recipe.model';
+import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Recipe } from '../models/recipe.model';
+import { RecipeService } from '../services/recipe.service';
 
 @Controller('recipes')
 export class RecipeController {
+    constructor(private readonly recipeService: RecipeService) {}
+
     @Get()
-    getAllRecipes(): Promise<Recipe[]> {
-        // récupérer toutes les recettes ici depuis la base de données
-        return Promise.resolve([]);
+    async getAllRecipes(): Promise<Recipe[]> {
+        return await this.recipeService.getAllRecipes();
     }
 
     @Post()
-    createRecipe(): Promise<Recipe> {
-        // créer une recette ici dans la base de données
-        return Promise.resolve(new Recipe());
+    async createRecipe(@Body() recipeData: Recipe): Promise<Recipe> {
+        return await this.recipeService.createRecipe(recipeData);
     }
 
     @Put(':id')
-    updateRecipe(): Promise<Recipe> {
-        // mettre à jour une recette ici dans la base de données
-        return Promise.resolve(new Recipe());
+    async updateRecipe(@Param('id') id: string, @Body() recipeData: Recipe): Promise<Recipe> {
+        return await this.recipeService.updateRecipe(id, recipeData);
     }
 
     @Delete(':id')
-    deleteRecipe(): Promise<void> {
-        // supprimer une recette ici dans la base de données
-        return Promise.resolve();
+    async deleteRecipe(@Param('id') id: string): Promise<void> {
+        await this.recipeService.deleteRecipe(id);
     }
 }

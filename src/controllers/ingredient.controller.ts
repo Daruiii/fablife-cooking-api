@@ -1,29 +1,28 @@
-import {Controller, Get, Post, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body, HttpException, HttpStatus } from '@nestjs/common';
 import { Ingredient } from '../models/ingredient.model';
+import { IngredientService } from '../services/ingredient.service';
 
 @Controller('ingredients')
 export class IngredientController {
+    constructor(private ingredientService: IngredientService) {}
+
     @Get()
-    getAlIngredients(): Promise<Ingredient[]> {
-        // récupérer tous les ingrédients ici depuis la base de données
-        return Promise.resolve([]);
+    async getAllIngredients(): Promise<Ingredient[]> {
+        return await this.ingredientService.getAllIngredients();
     }
 
     @Post()
-    createIngredient(): Promise<Ingredient> {
-        // créer un ingrédient ici dans la base de données
-        return Promise.resolve(new Ingredient());
+    async createIngredient(@Body() ingredientData: Ingredient): Promise<Ingredient> {
+        return await this.ingredientService.createIngredient(ingredientData);
     }
 
     @Put(':id')
-    updateIngredient(): Promise<Ingredient> {
-        // mettre à jour un ingrédient ici dans la base de données
-        return Promise.resolve(new Ingredient());
+    async updateIngredient(@Param('id') id: string, @Body() ingredientData: Ingredient): Promise<Ingredient> {
+        return await this.ingredientService.updateIngredient(id, ingredientData);
     }
 
     @Delete(':id')
-    deleteIngredient(): Promise<void> {
-        // supprimer un ingrédient ici dans la base de données
-        return Promise.resolve();
+    async deleteIngredient(@Param('id') id: string): Promise<void> {
+        await this.ingredientService.deleteIngredient(id);
     }
 }

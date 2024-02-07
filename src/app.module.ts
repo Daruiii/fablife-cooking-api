@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController, RecipeController, IngredientController } from './controllers';
+import { RecipeService, IngredientService, AppService } from './services';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Recipe } from './models/recipe.model';
+import { Ingredient } from './models/ingredient.model';
 
 @Module({
   imports: [
@@ -10,13 +12,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       host: 'localhost',
       port: 5432,
       username: 'david',
-      password: '',
+      password: 'bob',
       database: 'fablife_cooking',
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      entities: [Recipe, Ingredient],
       synchronize: true,
     }),
+    TypeOrmModule.forFeature([Recipe, Ingredient]),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, RecipeController, IngredientController],
+  providers: [AppService, RecipeService, IngredientService],
 })
 export class AppModule {}
