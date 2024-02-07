@@ -17,12 +17,12 @@ export class RecipeController {
     }
 
     @Put(':id')
-    async updateRecipe(@Param('id') id: string, @Body() recipeData: Recipe): Promise<Recipe> {
-        return await this.recipeService.updateRecipe(id, recipeData);
+    async updateRecipe(@Param('id') id: number, @Body() recipeData: Recipe, @Body('ingredientsWithQuantities') ingredientsWithQuantities: { ingredientId: number, quantityInGrams: number }[]): Promise<Recipe> {
+        return await this.recipeService.updateRecipe(id, recipeData, ingredientsWithQuantities);
     }
 
     @Delete(':id')
-    async deleteRecipe(@Param('id') id: string): Promise<void> {
-        await this.recipeService.deleteRecipe(id);
+    async deleteRecipe(@Param('id') id: number): Promise<void> {
+        return await this.recipeService.deleteRecipe(id);
     }
 }
