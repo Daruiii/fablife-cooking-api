@@ -12,8 +12,8 @@ export class RecipeController {
     }
 
     @Post()
-    async createRecipe(@Body() recipeData: Recipe): Promise<Recipe> {
-        return await this.recipeService.createRecipe(recipeData);
+    async createRecipe(@Body() recipeData: Recipe, @Body('ingredientsWithQuantities') ingredientsWithQuantities: { ingredientId: number, quantityInGrams: number }[]): Promise<Recipe> {
+        return await this.recipeService.createRecipe(recipeData, ingredientsWithQuantities);
     }
 
     @Put(':id')

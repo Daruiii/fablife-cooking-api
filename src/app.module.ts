@@ -4,6 +4,7 @@ import { RecipeService, IngredientService, AppService } from './services';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Recipe } from './models/recipe.model';
 import { Ingredient } from './models/ingredient.model';
+import { RecipeIngredient } from './models/recipe-ingredient.model';
 
 @Module({
   imports: [
@@ -14,10 +15,10 @@ import { Ingredient } from './models/ingredient.model';
       username: 'david',
       password: 'bob',
       database: 'fablife_cooking',
-      entities: [Recipe, Ingredient],
+      entities: [Recipe, Ingredient, RecipeIngredient],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([Recipe, Ingredient]),
+    TypeOrmModule.forFeature([Recipe, Ingredient, RecipeIngredient]),
   ],
   controllers: [AppController, RecipeController, IngredientController],
   providers: [AppService, RecipeService, IngredientService],

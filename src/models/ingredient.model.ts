@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, OneToMany } from 'typeorm';
 import { Recipe } from './recipe.model';
+import { RecipeIngredient } from './recipe-ingredient.model';
 
 @Entity()
 export class Ingredient {
@@ -13,9 +14,8 @@ export class Ingredient {
   aisle: string;
 
   @ManyToMany(() => Recipe, recipe => recipe.ingredients, { cascade: true })
-  @JoinTable()
   recipes: Recipe[];
 
-  @Column({ type: 'float' })
-  quantityInGrams: number;
+  @OneToMany(() => RecipeIngredient, recipeIngredient => recipeIngredient.ingredient, { cascade: true })
+  recipeIngredients: RecipeIngredient[];
 }
