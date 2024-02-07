@@ -2,16 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { Ingredient } from '../models/ingredient.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { RecipeIngredient } from 'src/models/recipe-ingredient.model';
 
 @Injectable()
 export class IngredientService {
     constructor(
         @InjectRepository(Ingredient)
         private ingredientRepository: Repository<Ingredient>,
+        @InjectRepository(RecipeIngredient)
+        private recipeIngredientRepository: Repository<RecipeIngredient>,
     ) {}
 
     async getAllIngredients(): Promise<Ingredient[]> {
-        return await this.ingredientRepository.find();
+        return await this.ingredientRepository.find({ relations: ['recipeIngredients', 'recipeIngredients.recipe'] });
     }
 
     async createIngredient(ingredientData: Ingredient): Promise<Ingredient> {

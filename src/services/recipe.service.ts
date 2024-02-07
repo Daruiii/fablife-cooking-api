@@ -21,18 +21,23 @@ export class RecipeService {
     }
 
     async createRecipe(recipeData: Recipe, ingredientsWithQuantities: { ingredientId: number, quantityInGrams: number }[]): Promise<Recipe> {
-        // Créer la recette
+        const existingRecipe = await this.recipeRepository.findOne({ where: { name: recipeData.name } });
+
+        if (!existingRecipe) {
+            console.log("BAZINGA");
+        }
+ 
+
         const newRecipe = this.recipeRepository.create(recipeData);
         const savedRecipe = await this.recipeRepository.save(newRecipe);
 
-        // Ajouter les ingrédients à la recette
         for (const ingredientData of ingredientsWithQuantities) {
             if (!ingredientData.quantityInGrams) {
                 continue;
             }
             const ingredient = await this.ingredientRepository.find(
                 { where: { id: ingredientData.ingredientId } }
-                )
+            )
             if (ingredient.length === 0) {
                 throw new Error(`Ingredient with id ${ingredientData.ingredientId} not found`);
             }
