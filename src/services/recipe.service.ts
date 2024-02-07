@@ -20,6 +20,13 @@ export class RecipeService {
         return await this.recipeRepository.find({ relations: ['recipeIngredients', 'recipeIngredients.ingredient'] });
     }
 
+    async getRecipeById(id: number): Promise<Recipe> {
+        return await this.recipeRepository.findOne({
+            where: { id },
+            relations: ['recipeIngredients', 'recipeIngredients.ingredient']
+        });
+    }
+
     async createRecipe(recipeData: Recipe, ingredientsWithQuantities: { ingredientId: number, quantityInGrams: number }[]): Promise<Recipe> {
         const existingRecipe = await this.recipeRepository.findOne({ where: { name: recipeData.name } });
 
