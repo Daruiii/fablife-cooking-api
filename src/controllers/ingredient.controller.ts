@@ -11,18 +11,27 @@ export class IngredientController {
         return await this.ingredientService.getAllIngredients();
     }
 
+    @Get(':id')
+    async getIngredientById(@Param('id') id: number): Promise<Ingredient> {
+        const ingredient = await this.ingredientService.getIngredientById(id);
+        if (!ingredient) {
+            throw new HttpException(`Ingredient with id ${id} not found`, HttpStatus.NOT_FOUND);
+        }
+        return ingredient;
+    }
+
     @Post()
     async createIngredient(@Body() ingredientData: Ingredient): Promise<Ingredient> {
         return await this.ingredientService.createIngredient(ingredientData);
     }
 
     @Put(':id')
-    async updateIngredient(@Param('id') id: string, @Body() ingredientData: Ingredient): Promise<Ingredient> {
+    async updateIngredient(@Param('id') id: number, @Body() ingredientData: Ingredient): Promise<Ingredient> {
         return await this.ingredientService.updateIngredient(id, ingredientData);
     }
 
     @Delete(':id')
-    async deleteIngredient(@Param('id') id: string): Promise<void> {
+    async deleteIngredient(@Param('id') id: number): Promise<void> {
         await this.ingredientService.deleteIngredient(id);
     }
 }

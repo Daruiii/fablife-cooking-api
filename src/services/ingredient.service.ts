@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { Ingredient } from '../models/ingredient.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -17,18 +17,32 @@ export class IngredientService {
         return await this.ingredientRepository.find({ relations: ['recipeIngredients', 'recipeIngredients.recipe'] });
     }
 
+    async getIngredientById(id: number): Promise<Ingredient> {
+        return await this.ingredientRepository.findOne({
+            where: { id },
+            relations: ['recipeIngredients', 'recipeIngredients.recipe']
+        });
+    }
+
     async createIngredient(ingredientData: Ingredient): Promise<Ingredient> {
         const newIngredient = this.ingredientRepository.create(ingredientData);
         return await this.ingredientRepository.save(newIngredient);
     }
 
-    async updateIngredient(id: string, ingredientData: Ingredient): Promise<Ingredient> {
-        // Logique pour mettre à jour un ingrédient dans la base de données
-        return ingredientData;
+    async updateIngredient(id: number, ingredientData: Ingredient): Promise<Ingredient> {
+        const ingredient = await this.ingredientRepository.findOne({ where: { id } });
+        if (!ingredient) {
+            throw new Error(`Ingredient with id ${id} not found`);
+        }
+        Object.assign(ingredient, ingredientData);
+        return await this.ingredientRepository.save(ingredient);
     }
 
-    async deleteIngredient(id: string): Promise<void> {
-        // Logique pour supprimer un ingrédient de la base de données
-        return;
+    async deleteIngredient(id: number): Promise<void> {
+        const ingredientInRecipes = await this.recipeIngredientRepository.findOne({ where: { ingredient: { id } } });
+        if (ingredientInRecipes) {
+            throw new ConflictException(`Ingredient with id ${id} is used in at least one recipe and cannot be deleted`);
+        }
+        await this.ingredientRepository.delete(id);
     }
 }
